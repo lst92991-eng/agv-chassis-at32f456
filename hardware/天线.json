@@ -1,0 +1,400 @@
+{
+    "version": "2.0.0",
+    "components": {
+        "gge17": {
+            "props": {
+                "Add into BOM": "yes",
+                "Designator": "A1",
+                "Convert to PCB": "yes",
+                "Footprint": "4ef1fc0e72d3a404",
+                "Symbol": "43b3de65e42202a5",
+                "Device": "45c1bf55e44ca3d9",
+                "Unique ID": "gge17",
+                "Reuse Block": "",
+                "Group ID": "",
+                "Channel ID": "$1I2",
+                "3D Model": "",
+                "3D Model Title": "",
+                "3D Model Transform": "",
+                "Description": "适用于PN532的RFID射频天线",
+                "Name": "",
+                "DeviceName": "ANT",
+                "FootprintName": "NFC-ANT_L_50_W_40"
+            },
+            "pinInfoMap": {
+                "1": {
+                    "name": "TX1",
+                    "number": "1",
+                    "net": "$1N1",
+                    "props": {
+                        "Pin Number": "1"
+                    }
+                },
+                "2": {
+                    "name": "GND",
+                    "number": "2",
+                    "net": "$1N2",
+                    "props": {
+                        "Pin Number": "2"
+                    }
+                },
+                "3": {
+                    "name": "TX2",
+                    "number": "3",
+                    "net": "$1N3",
+                    "props": {
+                        "Pin Number": "3"
+                    }
+                }
+            }
+        },
+        "gge170_0": {
+            "props": {
+                "Add into BOM": "yes",
+                "Convert to PCB": "yes",
+                "Designator": "SCREW1",
+                "Symbol": "adf5f1e34b81278d",
+                "Device": "6e5d5a64d35432cc",
+                "Name": "",
+                "Footprint": "8a71e5b05da72039",
+                "Unique ID": "gge170_0",
+                "Reuse Block": "",
+                "Group ID": "",
+                "Channel ID": "$1I5",
+                "Supplier Footprint": "插件",
+                "Description": "",
+                "DeviceName": "M2螺丝",
+                "FootprintName": "M2螺丝"
+            },
+            "pinInfoMap": {
+                "1": {
+                    "name": "1",
+                    "number": "1",
+                    "net": "",
+                    "props": {
+                        "Pin Number": "1"
+                    }
+                }
+            }
+        },
+        "gge171": {
+            "props": {
+                "Add into BOM": "yes",
+                "Convert to PCB": "yes",
+                "Designator": "SCREW2",
+                "Symbol": "adf5f1e34b81278d",
+                "Device": "6e5d5a64d35432cc",
+                "Name": "",
+                "Footprint": "8a71e5b05da72039",
+                "Unique ID": "gge171",
+                "Reuse Block": "",
+                "Group ID": "",
+                "Channel ID": "$1I6",
+                "Supplier Footprint": "插件",
+                "Description": "",
+                "DeviceName": "M2螺丝",
+                "FootprintName": "M2螺丝"
+            },
+            "pinInfoMap": {
+                "1": {
+                    "name": "1",
+                    "number": "1",
+                    "net": "",
+                    "props": {
+                        "Pin Number": "1"
+                    }
+                }
+            }
+        },
+        "gge172": {
+            "props": {
+                "Add into BOM": "yes",
+                "Convert to PCB": "yes",
+                "Designator": "SCREW3",
+                "Symbol": "adf5f1e34b81278d",
+                "Device": "6e5d5a64d35432cc",
+                "Name": "",
+                "Footprint": "8a71e5b05da72039",
+                "Unique ID": "gge172",
+                "Reuse Block": "",
+                "Group ID": "",
+                "Channel ID": "$1I7",
+                "Supplier Footprint": "插件",
+                "Description": "",
+                "DeviceName": "M2螺丝",
+                "FootprintName": "M2螺丝"
+            },
+            "pinInfoMap": {
+                "1": {
+                    "name": "1",
+                    "number": "1",
+                    "net": "",
+                    "props": {
+                        "Pin Number": "1"
+                    }
+                }
+            }
+        },
+        "gge173": {
+            "props": {
+                "Add into BOM": "yes",
+                "Convert to PCB": "yes",
+                "Designator": "SCREW4",
+                "Symbol": "adf5f1e34b81278d",
+                "Device": "6e5d5a64d35432cc",
+                "Name": "",
+                "Footprint": "8a71e5b05da72039",
+                "Unique ID": "gge173",
+                "Reuse Block": "",
+                "Group ID": "",
+                "Channel ID": "$1I8",
+                "Supplier Footprint": "插件",
+                "Description": "",
+                "DeviceName": "M2螺丝",
+                "FootprintName": "M2螺丝"
+            },
+            "pinInfoMap": {
+                "1": {
+                    "name": "1",
+                    "number": "1",
+                    "net": "",
+                    "props": {
+                        "Pin Number": "1"
+                    }
+                }
+            }
+        },
+        "gge174": {
+            "props": {
+                "Add into BOM": "yes",
+                "Convert to PCB": "yes",
+                "Symbol": "0a5154af86688e74",
+                "Designator": "CN1",
+                "Device": "5d86cb05d922a452",
+                "Unique ID": "gge174",
+                "LCSC Part Name": "1x3P 间距:2.54mm 弯插 系列:XH",
+                "Supplier Part": "C22751832",
+                "Manufacturer": "HANBO(汉博)",
+                "Manufacturer Part": "WAFER-XH254WZ-3AM",
+                "Supplier Footprint": "弯插,P=2.54mm",
+                "JLCPCB Part Class": "Extended Part",
+                "Datasheet": "https://item.szlcsc.com/datasheet/WAFER-XH254WZ-3AM/24478767.html",
+                "Supplier": "LCSC",
+                "Footprint": "ea0c6f00560018dc",
+                "Pins Structure": "1x3P",
+                "Pitch": "2.54mm",
+                "Mounting Type": "弯插",
+                "Reference Series": "XH",
+                "Number of Pins": "3P",
+                "Number of Rows": "1",
+                "Number of PINs Per Row": "3",
+                "Current Rating": "3A",
+                "Contact Material": "黄铜",
+                "Operating Temperature": "-25℃~+85℃",
+                "Voltage Rating": "250V",
+                "Plastic Material": "PA66",
+                "Flame Retardant Rating": "UL94V-0",
+                "Name": "={Manufacturer Part}",
+                "Description": "插针结构:1x3P;间距:2.54mm;安装方式:弯插;参考系列:XH;总PIN数:3P;排数:1;每排PIN数:3;额定电流:3A;触头材质:黄铜;工作温度:-25℃~+85℃;",
+                "Reuse Block": "",
+                "Group ID": "",
+                "Channel ID": "$1I11",
+                "DeviceName": "WAFER-XH254WZ-3AM",
+                "FootprintName": "CONN-TH_WAFER-XH254WZ-3A"
+            },
+            "pinInfoMap": {
+                "1": {
+                    "name": "1",
+                    "number": "1",
+                    "net": "$1N1",
+                    "props": {
+                        "Pin Number": "1"
+                    }
+                },
+                "2": {
+                    "name": "2",
+                    "number": "2",
+                    "net": "$1N2",
+                    "props": {
+                        "Pin Number": "2"
+                    }
+                },
+                "3": {
+                    "name": "3",
+                    "number": "3",
+                    "net": "$1N3",
+                    "props": {
+                        "Pin Number": "3"
+                    }
+                }
+            }
+        },
+        "gge170_1": {
+            "props": {
+                "Add into BOM": "yes",
+                "Convert to PCB": "yes",
+                "Designator": "SCREW5",
+                "Symbol": "adf5f1e34b81278d",
+                "Device": "6e5d5a64d35432cc",
+                "Name": "",
+                "Footprint": "8a71e5b05da72039",
+                "Unique ID": "gge170_1",
+                "Reuse Block": "",
+                "Group ID": "",
+                "Channel ID": "$1I12",
+                "Supplier Footprint": "插件",
+                "Description": "",
+                "DeviceName": "M2螺丝",
+                "FootprintName": "M2螺丝"
+            },
+            "pinInfoMap": {
+                "1": {
+                    "name": "1",
+                    "number": "1",
+                    "net": "",
+                    "props": {
+                        "Pin Number": "1"
+                    }
+                }
+            }
+        },
+        "gge171_0": {
+            "props": {
+                "Add into BOM": "yes",
+                "Convert to PCB": "yes",
+                "Designator": "SCREW6",
+                "Symbol": "adf5f1e34b81278d",
+                "Device": "6e5d5a64d35432cc",
+                "Name": "",
+                "Footprint": "8a71e5b05da72039",
+                "Unique ID": "gge171_0",
+                "Reuse Block": "",
+                "Group ID": "",
+                "Channel ID": "$1I13",
+                "Supplier Footprint": "插件",
+                "Description": "",
+                "DeviceName": "M2螺丝",
+                "FootprintName": "M2螺丝"
+            },
+            "pinInfoMap": {
+                "1": {
+                    "name": "1",
+                    "number": "1",
+                    "net": "",
+                    "props": {
+                        "Pin Number": "1"
+                    }
+                }
+            }
+        },
+        "gge172_0": {
+            "props": {
+                "Add into BOM": "yes",
+                "Convert to PCB": "yes",
+                "Designator": "SCREW7",
+                "Symbol": "adf5f1e34b81278d",
+                "Device": "6e5d5a64d35432cc",
+                "Name": "",
+                "Footprint": "8a71e5b05da72039",
+                "Unique ID": "gge172_0",
+                "Reuse Block": "",
+                "Group ID": "",
+                "Channel ID": "$1I14",
+                "Supplier Footprint": "插件",
+                "Description": "",
+                "DeviceName": "M2螺丝",
+                "FootprintName": "M2螺丝"
+            },
+            "pinInfoMap": {
+                "1": {
+                    "name": "1",
+                    "number": "1",
+                    "net": "",
+                    "props": {
+                        "Pin Number": "1"
+                    }
+                }
+            }
+        },
+        "gge173_0": {
+            "props": {
+                "Add into BOM": "yes",
+                "Convert to PCB": "yes",
+                "Designator": "SCREW8",
+                "Symbol": "adf5f1e34b81278d",
+                "Device": "6e5d5a64d35432cc",
+                "Name": "",
+                "Footprint": "8a71e5b05da72039",
+                "Unique ID": "gge173_0",
+                "Reuse Block": "",
+                "Group ID": "",
+                "Channel ID": "$1I15",
+                "Supplier Footprint": "插件",
+                "Description": "",
+                "DeviceName": "M2螺丝",
+                "FootprintName": "M2螺丝"
+            },
+            "pinInfoMap": {
+                "1": {
+                    "name": "1",
+                    "number": "1",
+                    "net": "",
+                    "props": {
+                        "Pin Number": "1"
+                    }
+                }
+            }
+        }
+    },
+    "designRule": {
+        "trackPhysics": {
+            "copperThickness1oz": {
+                "name": "copperThickness1oz",
+                "isDefault": true,
+                "unit": "mm",
+                "strokeValue": {
+                    "common": {
+                        "min": 0.127,
+                        "max": 2.54,
+                        "default": 0.254
+                    }
+                }
+            },
+            "copperThickness2oz": {
+                "name": "copperThickness2oz",
+                "isDefault": false,
+                "unit": "mm",
+                "strokeValue": {
+                    "common": {
+                        "min": 0.203,
+                        "max": 2.54,
+                        "default": 0.254
+                    }
+                }
+            }
+        },
+        "netRule": {
+            "$1N1": {
+                "net": "$1N1",
+                "ruleMap": {
+                    "TrackPhysics": ""
+                }
+            },
+            "$1N2": {
+                "net": "$1N2",
+                "ruleMap": {
+                    "TrackPhysics": ""
+                }
+            },
+            "$1N3": {
+                "net": "$1N3",
+                "ruleMap": {
+                    "TrackPhysics": ""
+                }
+            }
+        }
+    },
+    "differentialPair": {},
+    "netClass": {},
+    "equalLengthNetGroup": {}
+}
