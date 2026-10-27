@@ -148,7 +148,7 @@ void adc_dma_irq(void)
  * @brief 复制最近一组完成的三通道快照，主循环调用且不等待转换。
  * @param sample 非空输出地址；失败时保持调用方原数据。
  * @return 1表示读到完整快照，0表示未就绪、未完成首批、正在采样或参数为空。
- * @note take不消费批次，连续调用可返回相同sequence；safety据序号判断新样本。
+ * @note take不消费批次，连续调用可返回相同sequence；power_telemetry据序号判断新样本。
  *       保存/恢复原PRIMASK，避免误开启调用方已关闭的中断；busy==0才可复制，
  *       因为屏蔽CPU中断并不能阻止DMA继续改写内存。
  */

@@ -11,7 +11,6 @@
 #include "at32f45x_clock.h"
 #include "chassis_app.h"
 #include "app_freertos.h"
-#include "motor_driver.h"
 #include "board_port.h"
 
 /**
@@ -34,9 +33,9 @@ int main(void)
   board_port_time_init();
 
   /* 先完成原有底盘初始化，再创建静态任务；创建后立即启动调度，不插入耗时等待。 */
-  if((chassis_app_init() == 0U) || (app_freertos_init() == 0U))
+  chassis_app_init();
+  if(app_freertos_init() == 0U)
   {
-    motor_driver_stop_all(MOTOR_STOP_BRAKE);
     for(;;) {}
   }
 

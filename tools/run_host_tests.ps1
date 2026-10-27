@@ -66,9 +66,9 @@ Invoke-CHostTest `
   -TestRelativePath 'tests\drive_control_test.c' `
   -ModuleRelativePath 'src\services\drive_control.c'
 Invoke-CHostTest `
-  -Name 'safety_test' `
-  -TestRelativePath 'tests\safety_test.c' `
-  -ModuleRelativePath 'src\services\safety.c'
+  -Name 'power_telemetry_test' `
+  -TestRelativePath 'tests\power_telemetry_test.c' `
+  -ModuleRelativePath 'src\services\power_telemetry.c'
 Invoke-CHostTest `
   -Name 'chassis_protocol_test' `
   -TestRelativePath 'tests\chassis_protocol_test.c' `
@@ -76,7 +76,7 @@ Invoke-CHostTest `
 Invoke-CHostTest `
   -Name 'chassis_app_test' `
   -TestRelativePath 'tests\chassis_app_test.c' `
-  -ModuleRelativePath 'src\services\safety.c'
+  -ModuleRelativePath 'src\services\power_telemetry.c'
 Invoke-CHostTest `
   -Name 'app_freertos_test' `
   -TestRelativePath 'tests\app_freertos_test.c' `

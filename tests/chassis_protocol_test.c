@@ -132,58 +132,50 @@ static void test_reference_history_and_barrier(void)
   chassis_protocol_init();
   motion(100U, 0U);
   chassis_protocol_poll(0U);
-  check(chassis_protocol_get_reference(0U, &reference), "first reference missing");
+  check(chassis_protocol_get_reference(&reference), "first reference missing");
   chassis_protocol_clear_reference();
   motion(99U, 10U);
   chassis_protocol_poll(10U);
-  check(!chassis_protocol_get_reference(10U, &reference), "clear forgot sequence");
+  check(!chassis_protocol_get_reference(&reference), "clear forgot sequence");
   motion(101U, 20U);
   chassis_protocol_poll(20U);
-  check(chassis_protocol_get_reference(20U, &reference), "new reference rejected");
+  check(chassis_protocol_get_reference(&reference), "new reference rejected");
   motion(102U, 30U);
   chassis_protocol_clear_reference();
   chassis_protocol_poll(30U);
-  check(!chassis_protocol_get_reference(30U, &reference), "pre-enable queued reference accepted");
+  check(!chassis_protocol_get_reference(&reference), "pre-enable queued reference accepted");
   motion(103U, 40U);
   chassis_protocol_poll(40U);
-  check(chassis_protocol_get_reference(40U, &reference), "post-enable reference rejected");
+  check(chassis_protocol_get_reference(&reference), "post-enable reference rejected");
   chassis_protocol_init();
   rx_order = UINT32_MAX - 1U;
   chassis_protocol_clear_reference();
   motion(65535U, 0U);
   chassis_protocol_poll(0U);
-  check(chassis_protocol_get_reference(0U, &reference), "reference before wrap missing");
+  check(chassis_protocol_get_reference(&reference), "reference before wrap missing");
   chassis_protocol_clear_reference();
   motion(0U, 10U);
   chassis_protocol_poll(10U);
-  check(chassis_protocol_get_reference(10U, &reference), "order/sequence wrap rejected");
+  check(chassis_protocol_get_reference(&reference), "order/sequence wrap rejected");
 }
 
-static void test_receive_time_ttl(void)
+static void test_reference_does_not_expire(void)
 {
   drive_reference_t reference;
   chassis_protocol_init();
   motion(1U, 100U);
-  chassis_protocol_poll(219U);
-  check(chassis_protocol_get_reference(219U, &reference), "TTL expired early");
-  check(!chassis_protocol_get_reference(220U, &reference), "poll time extended TTL");
-  chassis_protocol_init();
-  motion(1U, 100U);
-  chassis_protocol_poll(220U);
-  check(!chassis_protocol_get_reference(220U, &reference), "expired queued frame revived");
-  chassis_protocol_init();
-  motion(1U, UINT32_MAX - 49U);
-  chassis_protocol_poll(20U);
-  check(chassis_protocol_get_reference(69U, &reference), "clock wrap expired early");
-  check(!chassis_protocol_get_reference(70U, &reference), "clock wrap missed TTL");
+  chassis_protocol_poll(1000000U);
+  check(chassis_protocol_get_reference(&reference), "queued target was expired locally");
+  chassis_protocol_poll(UINT32_MAX);
+  check(chassis_protocol_get_reference(&reference), "target did not hold without refresh");
+  chassis_protocol_clear_reference();
+  check(!chassis_protocol_get_reference(&reference), "explicit clear did not revoke target");
 }
 
 static void test_reference_fields(void)
 {
   const struct { uint8_t offset; uint16_t value; } invalid[] = {
-    {2U, 49U}, {2U, 301U}, {4U, 301U}, {4U, 65235U},
-    {6U, 1201U}, {6U, 64335U}, {8U, 0U}, {8U, 9U}, {8U, 501U},
-    {10U, 0U}, {10U, 9U}, {10U, 1001U}, {12U, 1U}
+    {12U, 1U}, {14U, 1U}
   };
   drive_reference_t reference;
   canfd_frame_t *frame;
@@ -191,7 +183,7 @@ static void test_reference_fields(void)
   chassis_protocol_init();
   motion(1U, 0U);
   chassis_protocol_poll(0U);
-  check(chassis_protocol_get_reference(0U, &reference), "golden reference missing");
+  check(chassis_protocol_get_reference(&reference), "golden reference missing");
   check(reference.linear_mm_s == 300 && reference.angular_mrad_s == 0 &&
         reference.accel_mm_s2 == 500U && reference.decel_mm_s2 == 1000U,
         "golden reference decoding changed");
@@ -202,21 +194,42 @@ static void test_reference_fields(void)
     frame->data[invalid[index].offset] = (uint8_t)invalid[index].value;
     frame->data[invalid[index].offset + 1U] = (uint8_t)(invalid[index].value >> 8U);
     chassis_protocol_poll(0U);
-    check(!chassis_protocol_get_reference(0U, &reference), "out-of-range field accepted");
+    check(!chassis_protocol_get_reference(&reference), "out-of-range field accepted");
     motion(1U, 1U);
     chassis_protocol_poll(1U);
-    check(chassis_protocol_get_reference(1U, &reference), "invalid field consumed sequence");
+    check(chassis_protocol_get_reference(&reference), "invalid field consumed sequence");
   }
   chassis_protocol_init();
   frame = motion(1U, 0U);
   memset(&frame->data[4], 0, 8U);
   chassis_protocol_poll(0U);
-  check(chassis_protocol_get_reference(0U, &reference), "all-zero HOLD rejected");
+  check(chassis_protocol_get_reference(&reference), "all-zero HOLD rejected");
   chassis_protocol_init();
   frame = motion(1U, 0U);
   frame->size = 12U;
   chassis_protocol_poll(0U);
-  check(!chassis_protocol_get_reference(0U, &reference), "short reference accepted");
+  check(!chassis_protocol_get_reference(&reference), "short reference accepted");
+}
+
+static void test_upper_owned_ranges(void)
+{
+  const uint8_t offsets[] = {2U, 4U, 6U, 8U, 10U};
+  drive_reference_t reference;
+  size_t i;
+  for(i = 0U; i < sizeof(offsets); i++)
+  {
+    canfd_frame_t *frame;
+    chassis_protocol_init();
+    frame = motion(1U, 0U);
+    frame->data[offsets[i]] = 0xffU;
+    frame->data[offsets[i] + 1U] = 0x7fU;
+    chassis_protocol_poll(5000U);
+    check(chassis_protocol_get_reference(&reference), "local range gate remains");
+  }
+  chassis_protocol_init();
+  motion(1U, 0U)->data[2] = 0U;
+  chassis_protocol_poll(0U);
+  check(chassis_protocol_get_reference(&reference), "zero TTL is still locally enforced");
 }
 
 static void test_output_golden_bytes(void)
@@ -241,7 +254,8 @@ int main(void)
   test_stop_precedence();
   test_command_zero_and_wrap();
   test_reference_history_and_barrier();
-  test_receive_time_ttl();
+  test_reference_does_not_expire();
+  test_upper_owned_ranges();
   test_reference_fields();
   test_output_golden_bytes();
   puts("CHASSIS_PROTOCOL_TEST_PASS");

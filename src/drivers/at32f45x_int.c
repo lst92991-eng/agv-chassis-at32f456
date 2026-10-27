@@ -25,7 +25,7 @@
 
 /*
  * 保留官方中断文件名与版权头。以下项目ISR从board_port.c原样迁回：
- * 普通外设中断只采样/投递，CPU异常保持原主动制动路径。
+ * 普通外设中断只采样/投递，CPU异常只进入处理器异常停留。
  * SVC/PendSV由FreeRTOS官方移植层提供强入口，DebugMon继续使用启动文件弱默认。
  */
 #include "at32f45x_int.h"
@@ -37,7 +37,6 @@
 #include "adc_dma.h"
 #include "bumper.h"
 #include "canfd_driver.h"
-#include "motor_driver.h"
 #include "motor_encoder.h"
 
 /* 不将此名字映射为SysTick_Handler，避免覆盖官方中断文件中的共享时基入口。 */
@@ -50,30 +49,25 @@ void SysTick_Handler(void)
   if(xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) xPortSysTickHandler();
 }
 
-/**
- * @brief CPU异常共用收尾：屏蔽中断、双电机主动制动，然后永久停留。
- * @note 异常上下文不走协议或业务状态机；屏障保证制动寄存器写入后再停留。
- *       已启用的硬件看门狗会因无法继续喂狗而复位；若尚未启用则保持停留。
- */
-static void board_safe_halt(void)
+/** @brief CPU异常屏蔽中断并停留，不在异常处理程序中执行运动控制。 */
+static void board_fault_halt(void)
 {
   __disable_irq();
-  motor_driver_stop_all(MOTOR_STOP_BRAKE);
   __DSB();
   __ISB();
   for(;;) {}
 }
 
-/** @brief 不可屏蔽异常入口，直接转入制动停留。 */
-void NMI_Handler(void) { board_safe_halt(); }
-/** @brief 硬故障入口，直接转入制动停留。 */
-void HardFault_Handler(void) { board_safe_halt(); }
-/** @brief 内存访问管理异常入口，直接转入制动停留。 */
-void MemManage_Handler(void) { board_safe_halt(); }
-/** @brief 总线访问异常入口，直接转入制动停留。 */
-void BusFault_Handler(void) { board_safe_halt(); }
-/** @brief 非法指令等用法异常入口，直接转入制动停留。 */
-void UsageFault_Handler(void) { board_safe_halt(); }
+/** @brief 不可屏蔽异常入口，直接转入异常停留。 */
+void NMI_Handler(void) { board_fault_halt(); }
+/** @brief 硬故障入口，直接转入异常停留。 */
+void HardFault_Handler(void) { board_fault_halt(); }
+/** @brief 内存访问管理异常入口，直接转入异常停留。 */
+void MemManage_Handler(void) { board_fault_halt(); }
+/** @brief 总线访问异常入口，直接转入异常停留。 */
+void BusFault_Handler(void) { board_fault_halt(); }
+/** @brief 非法指令等用法异常入口，直接转入异常停留。 */
+void UsageFault_Handler(void) { board_fault_halt(); }
 
 /** @brief CAN3接收ISR，把硬件帧交给驱动缓冲；此处不执行运动指令。 */
 void CAN3_RX_IRQHandler(void) { canfd_driver_rx_irq(); }
@@ -93,7 +87,7 @@ void EXINT4_IRQHandler(void)
 /**
  * @brief 分发共享EXINT5～9：右编码器PC5、左编码器PA6/PA7和右防撞条。
  * @note 同次ISR内同一编码器只采样一次AB相位；防撞条只记录输入事件，
- *       后续制动由主循环消费锁存状态。
+ *       主循环消费锁存状态并上报。
  */
 void EXINT9_5_IRQHandler(void)
 {

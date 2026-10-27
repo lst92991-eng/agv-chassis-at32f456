@@ -30,6 +30,7 @@ static uint8_t canfd_tx_busy;           /* 主循环独占的硬件发送槽占�
 static uint8_t canfd_tx_handle;
 static uint32_t canfd_tx_started_ms;
 static uint32_t canfd_now_ms;
+static uint32_t canfd_last_recover_ms;
 static volatile uint32_t canfd_order;   /* 已入队输入帧的顺序号；恢复CAN也不重置。 */
 
 /** @brief 将CAN FD的DLC枚举换成真实长度；DLC大于8后不是字节数本身。 */
@@ -109,6 +110,12 @@ void canfd_driver_init(void)
 void canfd_driver_poll(uint32_t now_ms)
 {
   canfd_now_ms = now_ms;
+  /* 只恢复传输通道，不改变当前运动目标。 */
+  if(CAN3->ctrlstat_bit.busoff && now_ms - canfd_last_recover_ms >= 1000U)
+  {
+    canfd_last_recover_ms = now_ms;
+    canfd_driver_recover();
+  }
   if((canfd_tx_busy != 0U) && (can_flag_get(CAN3, CAN_TPIF_FLAG) != RESET))
   {
     can_flag_clear(CAN3, CAN_TPIF_FLAG);
@@ -199,7 +206,7 @@ uint8_t canfd_driver_send(uint32_t id, const uint8_t *data, uint8_t size)
 {
   can_txbuf_type tx;
   if((data == 0) || (size == 0U) || (size > 32U) || (canfd_tx_busy != 0U) ||
-     (canfd_driver_healthy() == 0U)) return 0U;
+     (CAN3->ctrlstat_bit.busoff != 0U)) return 0U;
   memset(&tx, 0, sizeof(tx));
   tx.id = id;
   tx.id_type = CAN_ID_STANDARD;
@@ -217,7 +224,7 @@ uint8_t canfd_driver_send(uint32_t id, const uint8_t *data, uint8_t size)
 }
 
 /**
- * @brief 判断控制器没有bus-off/error-passive，且本驱动没有锁存溢出或TX超时。
+ * @brief 判断控制器没有bus-off/error-passive，且本驱动没有锁存溢出或TX超时，仅用于诊断上报。
  * @return 1=上述链路条件正常；0=上层应按CAN故障停止运动。
  */
 uint8_t canfd_driver_healthy(void)

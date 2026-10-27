@@ -74,15 +74,9 @@ void board_port_watchdog_feed(void) { watchdog_calls++; }
 void __WFI(void) { idle_calls++; }
 void __disable_irq(void) { irq_calls++; }
 void __DSB(void) {}
-void __ISB(void) {}
+void __ISB(void) { longjmp(test_exit, 2); }
 void motor_driver_stop_all(motor_stop_mode_t mode)
-{
-  check(irq_calls == 1U, "fault braking ran before IRQs were disabled");
-  check(mode == MOTOR_STOP_BRAKE, "RTOS fault selected coast instead of brake");
-  brake_calls++;
-  /* 在安全输出边界离开，避免测试进入生产永久停留路径。 */
-  longjmp(test_exit, 2);
-}
+{ (void)mode; brake_calls++; }
 
 static void reset_fixture(void)
 {
@@ -168,7 +162,7 @@ static void test_idle_does_not_feed_watchdog(void)
         "Idle must only wait for interrupts, never run control or feed watchdog");
 }
 
-static void test_fault_hooks_brake(void)
+static void test_fault_hooks_only_halt(void)
 {
   unsigned int scenario;
   for(scenario = 0U; scenario < 3U; scenario++)
@@ -179,10 +173,10 @@ static void test_fault_hooks_brake(void)
       if(scenario == 0U) app_freertos_assert_failed(__FILE__, __LINE__);
       else if(scenario == 1U) vApplicationStackOverflowHook(NULL, NULL);
       else app_freertos_start();
-      check(0, "RTOS failure path returned without braking");
+      check(0, "RTOS failure path unexpectedly returned");
     }
-    check(irq_calls == 1U && brake_calls == 1U && watchdog_calls == 0U,
-          "RTOS failure did not disable IRQs and brake without feeding watchdog");
+    check(irq_calls == 1U && brake_calls == 0U && watchdog_calls == 0U,
+          "RTOS exception must not change PWM or start/reset a watchdog");
     check(scheduler_calls == (scenario == 2U ? 1U : 0U),
           "scheduler-return failure path was not exercised exactly once");
   }
@@ -193,7 +187,7 @@ int main(void)
   test_static_creation();
   test_period_and_wrap();
   test_idle_does_not_feed_watchdog();
-  test_fault_hooks_brake();
+  test_fault_hooks_only_halt();
   puts("APP_FREERTOS_TEST_PASS");
   return 0;
 }

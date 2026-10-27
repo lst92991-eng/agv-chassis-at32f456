@@ -1,6 +1,6 @@
 /**
  * @file chassis_protocol.h
- * @brief 单上位机V0.3控制命令、短TTL车体Reference及状态发送接口。
+ * @brief 单上位机V0.3字节布局的命令执行与遥测接口。
  *
  * 所有接口由主循环调用。CAN ISR由驱动层复制帧，协议层不直接操作电机。
  * 0x201管理使能/停止/复位；0x401是唯一非安全运动输入，所有多字节字段为小端。
@@ -35,8 +35,8 @@ typedef struct
 /** @brief 0x181的内存快照；协议编码器逐字段发送，禁止直接发送此结构体内存。 */
 typedef struct
 {
-  uint8_t state;                /**< 0禁用、1已使能、2执行Reference、3故障。 */
-  uint8_t fault;                /**< safety.h定义的锁存故障位。 */
+  uint8_t state;                /**< 0静止、1ENABLE/HOLD、2执行Reference、3上位机ESTOP锁存。 */
+  uint8_t fault;                /**< 诊断位；只有0x02表示上位机ESTOP锁存，其余不影响运动。 */
   uint8_t bumper_mask;          /**< 前/后/左/右防撞锁存位，定义见bumper.h。 */
   uint8_t flags;                /**< bit0:IMU有效；bit1:里程计与IMU均有效。 */
   uint16_t command_sequence;    /**< 最近被应用层处理的管理命令序号。 */
@@ -54,12 +54,8 @@ void chassis_protocol_init(void);
 void chassis_protocol_poll(uint32_t now_ms);
 /** @brief 输出并消费最高优先级待处理命令；返回1表示有命令，0表示无命令或空指针。 */
 uint8_t chassis_protocol_take_command(chassis_command_t *command);
-/**
- * @brief 输出仍在50～300ms报文TTL内的最新Reference，成功返回1，否则返回0。
- * @param now_ms 与CAN接收时间同源的真实毫秒时钟。
- * @param reference 有效时写入车体v/omega与斜率限制；此调用不消费目标、不执行制动。
- */
-uint8_t chassis_protocol_get_reference(uint32_t now_ms, drive_reference_t *reference);
+/** @brief 复制最新目标，无TTL过期判断；停止命令通过clear_reference撤销。 */
+uint8_t chassis_protocol_get_reference(drive_reference_t *reference);
 /** @brief 撤销目标并屏蔽已接收帧，保留序号历史；ENABLE/STOP/故障切换时调用。 */
 void chassis_protocol_clear_reference(void);
 /** @brief 返回1表示CAN驱动当前无bus-off/error-passive/已锁存链路错误。 */

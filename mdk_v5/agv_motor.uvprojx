@@ -394,7 +394,7 @@
             <File><FileName>chassis_protocol.c</FileName><FileType>1</FileType><FilePath>..\src\services\chassis_protocol.c</FilePath></File>
             <File><FileName>drive_control.c</FileName><FileType>1</FileType><FilePath>..\src\services\drive_control.c</FilePath></File>
             <File><FileName>odometry.c</FileName><FileType>1</FileType><FilePath>..\src\services\odometry.c</FilePath></File>
-            <File><FileName>safety.c</FileName><FileType>1</FileType><FilePath>..\src\services\safety.c</FilePath></File>
+            <File><FileName>power_telemetry.c</FileName><FileType>1</FileType><FilePath>..\src\services\power_telemetry.c</FilePath></File>
           </Files>
         </Group>
         <Group>
@@ -468,11 +468,6 @@
               <FileName>at32f45x_dma.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\libraries\drivers\src\at32f45x_dma.c</FilePath>
-            </File>
-            <File>
-              <FileName>at32f45x_wdt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\libraries\drivers\src\at32f45x_wdt.c</FilePath>
             </File>
             <File>
               <FileName>at32f45x_crm.c</FileName>
